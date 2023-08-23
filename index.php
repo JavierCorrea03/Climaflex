@@ -132,13 +132,14 @@
                         contador = 1;
                     },
                     "rowCallback": function (row, data) {
-                        $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5)').addClass('text-center');
+                        $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5), td:eq(6)').addClass('text-center');
                     },
                     ajax: {
                         url: "controlador/control.php",
                         method: "POST",
                         error: function (d) {
-                            
+                            //efecto_error("No fue posible cargar la tabla, por favor, intente de nuevo.");
+                            console.log("error");
                             cerrar_modal("modal_cargando");
                         }
                     },
@@ -153,14 +154,24 @@
                         {"data": "apellido"},
                         {"data": "descripcion"},
                         {"data": "precio"},
-                        {"data": "movimiento"},
-                        {"data": "fecha"}
+                        {"data": "tipo_de_movimiento"},
+                        {"data": "fecha_de_movimiento"}
                     ],
                     "destroy": true
                 }).on("draw", function () {
                     cerrar_modal("modal_cargando");
                 });
-
+                
+//                $.ajax({
+//                    url: "controlador/control.php",
+//                    type: "POST",
+//                    cache: false,
+//                    contentType: false,
+//                    processData: false
+//                }).done(function(res) {
+//                    cerrar_modal("modal_cargando");
+//                    console.log(res);
+//                });
                 
             });
             
