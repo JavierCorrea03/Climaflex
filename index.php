@@ -6,7 +6,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Prueba Climaflex</title>
-
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" sizes="16x16 32x32" href="img/logo-33.png">
         <!-- CSS -->
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -15,9 +16,10 @@
         <link rel="stylesheet" type="text/css" href="vendor/sweetalert2/sweetalert2.min.css"> 
         <!-- Libreria CSS para alertas toast -->
         <link rel="stylesheet" type="text/css" href="vendor/toastr/toastr.css" /> 
+        <!-- Datatables -->
+        <link rel="stylesheet" type="text/css" href="vendor/DataTables-1.10.20/css/dataTables.bootstrap4.min.css">
 
         <style>
-
             .fondo {
                 width: 500px;
                 height: 340px;
@@ -49,12 +51,12 @@
                                 <!-- TEXTO -->
                                 <div class="row px-3 mb-3">
                                     <label class="mb-1">
-                                        <h3 class="mb-0">Consultar principales movimientos</h3>
+                                        <h3 class="mb-0">Consultar los principales movimientos mayores a $250.00 MXN</h3>
                                     </label>
                                 </div>
                                 <!-- BOTON -->
-                                <div class="row px-3 mb-3" align="right">
-                                    <button type="submit" class="btn btn-primary text-center" >Consultar</button>
+                                <div class="row px-3 mb-3">
+                                    <button id="btn_consulta" type="button" class="btn btn-primary text-center" >Consultar</button>
                                 </div>
                                 <!-- TABLA -->
                                 <div class="table-responsive" id="div_tabla">
@@ -94,7 +96,88 @@
             </div>
         </div>
         
+        <!-- jQuery -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <!-- Datatables -->
+        <script type="text/javascript" src="vendor/DataTables-1.10.20/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="vendor/DataTables-1.10.20/js/dataTables.bootstrap4.min.js"></script>
         
+        <script> 
+            var tabla_principal = "";
+            // CLICK EN CONSULTAR
+            $("#btn_consulta").click(function(){
+                
+                abrir_modal("modal_cargando");
+                
+                tabla_principal = $('#tabla').DataTable({
+                    "iDisplayStart": 0,
+                    "iDisplayLength": 10,
+                    "bPaginate": true,
+                    "bSort": true,
+                    "scrollX": true,
+                    "language": {
+                        "emptyTable": "No hay datos disponibles en la tabla",
+                        "lengthMenu": "Mostrar _MENU_ entradas",
+                        "search": "Buscar:",
+                        "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        "infoEmpty": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                        "zeroRecords": "No se encontraron registros coincidentes",
+                        "paginate": {
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        }
+                    },
+                    "preDrawCallback": function (settings) {
+                        contador = 1;
+                    },
+                    "rowCallback": function (row, data) {
+                        $(row).find('td:eq(0), td:eq(1), td:eq(2), td:eq(3), td:eq(4), td:eq(5)').addClass('text-center');
+                    },
+                    ajax: {
+                        url: "controlador/control.php",
+                        method: "POST",
+                        error: function (d) {
+                            
+                            cerrar_modal("modal_cargando");
+                        }
+                    },
+                    columns: [
+                        {
+                            "defaultContent": "",
+                            "render": function (data, type, row) {
+                                return contador++;
+                            }, visible: true
+                        },
+                        {"data": "nombre"},
+                        {"data": "apellido"},
+                        {"data": "descripcion"},
+                        {"data": "precio"},
+                        {"data": "movimiento"},
+                        {"data": "fecha"}
+                    ],
+                    "destroy": true
+                }).on("draw", function () {
+                    cerrar_modal("modal_cargando");
+                });
+
+                
+            });
+            
+            
+            
+         </script>
+         
+         <!-- MODAL -->
+        <script>
+            function abrir_modal(div) {
+                $('#' + div).css("display", "block");
+            }
+
+            function cerrar_modal(div) {
+                $('#' + div).css("display", "none");
+            }
+        </script>
         
     </body>
 </html>
