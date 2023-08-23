@@ -27,12 +27,12 @@
             .div_logo {
                 background-color: #005ec3;
             }
+            .invisible { 
+                display: none; 
+            }
         </style>
     </head>
     <body>
-        <?php
-        // put your code here
-        ?>
         <div class="container-fluid px-1 px-md-5 px-lg-1 px-xl-5 py-5 mx-auto">
             <div id="div_consulta">
                 <div class="card card0 border-0">
@@ -59,8 +59,7 @@
                                     <button id="btn_consulta" type="button" class="btn btn-primary text-center" >Consultar</button>
                                 </div>
                                 <!-- TABLA -->
-                                <div class="table-responsive" id="div_tabla">
-                                    <!-- Contenido Tabla Tarimas -->
+                                <div class="table-responsive invisible" id="div_tabla">
                                     <table class="table table-hover table-striped table-bordered dt-responsive nowrap" id="tabla" style="width:100%">
                                         <thead style="color: #FFF; background-color: #005ec3; text-align: center;">
                                             <tr>
@@ -103,10 +102,10 @@
         <script type="text/javascript" src="vendor/DataTables-1.10.20/js/dataTables.bootstrap4.min.js"></script>
         
         <script> 
-            var tabla_principal = "";
+            
             // CLICK EN CONSULTAR
             $("#btn_consulta").click(function(){
-                
+                abrir_modal("div_tabla");
                 abrir_modal("modal_cargando");
                 
                 tabla_principal = $('#tabla').DataTable({
@@ -114,6 +113,7 @@
                     "iDisplayLength": 10,
                     "bPaginate": true,
                     "bSort": true,
+                    
                     "scrollX": true,
                     "language": {
                         "emptyTable": "No hay datos disponibles en la tabla",
@@ -138,8 +138,6 @@
                         url: "controlador/control.php",
                         method: "POST",
                         error: function (d) {
-                            //efecto_error("No fue posible cargar la tabla, por favor, intente de nuevo.");
-                            console.log("error");
                             cerrar_modal("modal_cargando");
                         }
                     },
@@ -161,28 +159,14 @@
                 }).on("draw", function () {
                     cerrar_modal("modal_cargando");
                 });
-                
-//                $.ajax({
-//                    url: "controlador/control.php",
-//                    type: "POST",
-//                    cache: false,
-//                    contentType: false,
-//                    processData: false
-//                }).done(function(res) {
-//                    cerrar_modal("modal_cargando");
-//                    console.log(res);
-//                });
-                
             });
-            
-            
-            
          </script>
          
-         <!-- MODAL -->
+        <!-- MODAL -->
         <script>
             function abrir_modal(div) {
                 $('#' + div).css("display", "block");
+                $('#' + div).removeClass("invisible");
             }
 
             function cerrar_modal(div) {
